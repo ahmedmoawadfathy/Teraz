@@ -11,16 +11,14 @@ export default function CartScreen({ navigation }: MainTabScreenProps<'Cart'>) {
 
   if (items.length === 0) {
     return (
-      <View className="flex-1 bg-cream">
-        <StateMessage
-          type="empty"
-          icon="bag-outline"
-          title="Your cart is empty"
-          message="Add a tie or a belt to get started."
-          actionLabel="Browse the collection"
-          onAction={() => navigation.navigate('Home')}
-        />
-      </View>
+      <StateMessage
+        type="empty"
+        icon="bag-handle-outline"
+        title="Your cart is empty"
+        message="The perfect tie or belt is waiting. Add a piece to get started."
+        actionLabel="Explore the collection"
+        onAction={() => navigation.navigate('Home')}
+      />
     );
   }
 
@@ -28,30 +26,36 @@ export default function CartScreen({ navigation }: MainTabScreenProps<'Cart'>) {
     <View className="flex-1 bg-cream">
       <FlatList
         data={items}
-        keyExtractor={(item) => item.product.id}
-        contentContainerClassName="gap-3 p-4"
+        keyExtractor={(item) => item.lineId}
+        contentContainerClassName="gap-3 px-5 pb-6"
+        ListHeaderComponent={
+          <Text className="pb-1 text-muted">
+            {itemCount} {itemCount === 1 ? 'piece' : 'pieces'} in your cart
+          </Text>
+        }
         renderItem={({ item }) => (
           <CartItemRow
             item={item}
-            onIncrease={() => updateQuantity(item.product.id, item.quantity + 1)}
-            onDecrease={() => updateQuantity(item.product.id, item.quantity - 1)}
-            onRemove={() => removeFromCart(item.product.id)}
+            onIncrease={() => updateQuantity(item.lineId, item.quantity + 1)}
+            onDecrease={() => updateQuantity(item.lineId, item.quantity - 1)}
+            onRemove={() => removeFromCart(item.lineId)}
           />
         )}
       />
 
-      <View className="gap-3 border-t border-line bg-surface p-4">
-        <View className="flex-row justify-between">
-          <Text className="text-muted">
-            Subtotal ({itemCount} {itemCount === 1 ? 'item' : 'items'})
-          </Text>
-          <Text className="font-semibold text-ink">{formatPrice(total)}</Text>
+      <View className="gap-4 rounded-t-[32px] bg-surface px-5 pb-5 pt-6 shadow-lg">
+        <View className="gap-2">
+          <View className="flex-row justify-between">
+            <Text className="text-muted">Subtotal</Text>
+            <Text className="font-semibold text-ink">{formatPrice(total)}</Text>
+          </View>
+          <View className="h-px bg-line" />
+          <View className="flex-row items-end justify-between">
+            <Text className="font-display text-xl text-ink">Total</Text>
+            <Text className="font-display text-3xl text-ink">{formatPrice(total)}</Text>
+          </View>
         </View>
-        <View className="flex-row justify-between">
-          <Text className="text-lg font-bold text-ink">Total</Text>
-          <Text className="text-lg font-bold text-ink">{formatPrice(total)}</Text>
-        </View>
-        <AppButton label="Checkout" onPress={() => navigation.navigate('Checkout')} />
+        <AppButton label="Checkout" icon="lock-closed-outline" onPress={() => navigation.navigate('Checkout')} />
       </View>
     </View>
   );

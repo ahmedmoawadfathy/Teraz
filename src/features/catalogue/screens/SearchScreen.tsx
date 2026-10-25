@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, Text, TextInput, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Chip } from '@/components/ui/Chip';
 import { StateMessage } from '@/components/ui/StateMessage';
@@ -7,8 +7,8 @@ import { useFavourites } from '@/features/favourites/hooks/useFavourites';
 import { colors } from '@/theme/tokens';
 import { colourHex } from '../colours';
 import { ProductCard } from '../components/ProductCard';
-import { PRICE_RANGES, useProductSearch } from '../hooks/useProductSearch';
-import type { Category } from '../types';
+import { AVAILABILITY_OPTIONS, PRICE_RANGES, useProductSearch } from '../hooks/useProductSearch';
+import { SORT_OPTIONS, type Category } from '../types';
 
 const CATEGORIES: { value: Category | 'all'; label: string }[] = [
   { value: 'all', label: 'All' },
@@ -16,27 +16,45 @@ const CATEGORIES: { value: Category | 'all'; label: string }[] = [
   { value: 'belt', label: 'Belts' },
 ];
 
+function FilterRow({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <View className="gap-2.5">
+      <Text className="px-5 text-xs font-bold uppercase tracking-widest text-muted">{title}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2 px-5">
+        {children}
+      </ScrollView>
+    </View>
+  );
+}
+
 export default function SearchScreen({ navigation }: RootStackScreenProps<'Search'>) {
   const search = useProductSearch();
   const { isFavourite, toggleFavourite } = useFavourites();
 
   const filters = (
-    <View className="gap-3 pb-2">
-      <View className="flex-row items-center gap-3 rounded-xl border border-line bg-surface px-4">
-        <Ionicons name="search" size={18} color={colors.muted} />
-        <TextInput
-          value={search.query}
-          onChangeText={search.setQuery}
-          placeholder="Search by name or style"
-          placeholderTextColor="#9CA3AF"
-          autoFocus
-          returnKeyType="search"
-          accessibilityLabel="Search products"
-          className="flex-1 py-3 text-base text-ink"
-        />
+    <View className="gap-5 pb-3">
+      <View className="px-5">
+        <View className="flex-row items-center gap-3 rounded-full border border-line bg-surface px-5 shadow-sm">
+          <Ionicons name="search" size={18} color={colors.gold} />
+          <TextInput
+            value={search.query}
+            onChangeText={search.setQuery}
+            placeholder="Search by name or style"
+            placeholderTextColor="#A3A7B0"
+            autoFocus
+            returnKeyType="search"
+            accessibilityLabel="Search products"
+            className="flex-1 py-4 text-base text-ink"
+          />
+          {search.query ? (
+            <Pressable onPress={() => search.setQuery('')} accessibilityRole="button" accessibilityLabel="Clear search" hitSlop={8}>
+              <Ionicons name="close-circle" size={18} color={colors.muted} />
+            </Pressable>
+          ) : null}
+        </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+      <FilterRow title="Category">
         {CATEGORIES.map((item) => (
           <Chip
             key={item.value}
@@ -45,9 +63,9 @@ export default function SearchScreen({ navigation }: RootStackScreenProps<'Searc
             onPress={() => search.setCategory(item.value)}
           />
         ))}
-      </ScrollView>
+      </FilterRow>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+      <FilterRow title="Colour">
         {search.colourOptions.map((name) => (
           <Chip
             key={name}
@@ -57,9 +75,32 @@ export default function SearchScreen({ navigation }: RootStackScreenProps<'Searc
             onPress={() => search.setColour(search.colour === name ? null : name)}
           />
         ))}
-      </ScrollView>
+      </FilterRow>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2">
+      <FilterRow title="Sort by">
+        {SORT_OPTIONS.map((option) => (
+          <Chip
+            key={option.value}
+            label={option.label}
+            icon={search.sort === option.value ? 'swap-vertical' : undefined}
+            selected={search.sort === option.value}
+            onPress={() => search.setSort(option.value)}
+          />
+        ))}
+      </FilterRow>
+
+      <FilterRow title="Availability">
+        {AVAILABILITY_OPTIONS.map((option) => (
+          <Chip
+            key={option.value}
+            label={option.label}
+            selected={search.availability === option.value}
+            onPress={() => search.setAvailability(option.value)}
+          />
+        ))}
+      </FilterRow>
+
+      <FilterRow title="Price (EGP)">
         {PRICE_RANGES.map((range) => (
           <Chip
             key={range.value}
@@ -68,11 +109,18 @@ export default function SearchScreen({ navigation }: RootStackScreenProps<'Searc
             onPress={() => search.setPriceRange(range.value)}
           />
         ))}
-      </ScrollView>
+      </FilterRow>
 
-      <Text className="text-sm text-muted">
-        {search.results.length} {search.results.length === 1 ? 'result' : 'results'}
-      </Text>
+      <View className="flex-row items-center justify-between px-5 pt-1">
+        <Text className="font-display text-xl text-ink">
+          {search.results.length} {search.results.length === 1 ? 'piece' : 'pieces'}
+        </Text>
+        {search.hasFilters ? (
+          <Pressable onPress={search.clearFilters} accessibilityRole="button" hitSlop={8} className="active:opacity-60">
+            <Text className="font-semibold text-gold">Clear all</Text>
+          </Pressable>
+        ) : null}
+      </View>
     </View>
   );
 
@@ -85,8 +133,8 @@ export default function SearchScreen({ navigation }: RootStackScreenProps<'Searc
       data={search.results}
       keyExtractor={(item) => item.id}
       numColumns={2}
-      columnWrapperClassName="gap-3"
-      contentContainerClassName="gap-3 p-4"
+      columnWrapperClassName="gap-3 px-5"
+      contentContainerClassName="gap-3 pb-10 pt-2"
       keyboardShouldPersistTaps="handled"
       ListHeaderComponent={filters}
       ListEmptyComponent={
@@ -94,7 +142,7 @@ export default function SearchScreen({ navigation }: RootStackScreenProps<'Searc
           type="empty"
           icon="search-outline"
           title="No results found"
-          message="No products match your search. Try another word or fewer filters."
+          message="No pieces match your search. Try another word or fewer filters."
           actionLabel={search.hasFilters ? 'Clear search and filters' : undefined}
           onAction={search.clearFilters}
         />

@@ -1,6 +1,7 @@
-import type { Product } from './types';
+import { BELT_SIZES, type Product } from './types';
 
 // Prototype catalogue. Replace imageUrl with the real Teraz product photos.
+// compareAtPrice = original price (item on sale); sizes = the customer must choose one.
 export const PRODUCTS: Product[] = [
   {
     id: 't1',
@@ -13,6 +14,7 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['wedding', 'business', 'formal', 'interview'],
     inStock: true,
+    addedAt: '2026-08-01',
   },
   {
     id: 't2',
@@ -25,6 +27,8 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['business', 'formal', 'interview'],
     inStock: true,
+    compareAtPrice: 520,
+    addedAt: '2026-08-10',
   },
   {
     id: 't3',
@@ -37,6 +41,8 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['wedding', 'formal'],
     inStock: true,
+    isNew: true,
+    addedAt: '2026-10-12',
   },
   {
     id: 't4',
@@ -49,6 +55,7 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['formal', 'interview', 'business'],
     inStock: true,
+    addedAt: '2026-08-20',
   },
   {
     id: 't5',
@@ -61,6 +68,8 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['wedding'],
     inStock: true,
+    compareAtPrice: 590,
+    addedAt: '2026-09-02',
   },
   {
     id: 't6',
@@ -73,6 +82,7 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['business', 'interview'],
     inStock: false,
+    addedAt: '2026-09-15',
   },
   {
     id: 't7',
@@ -85,6 +95,8 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['wedding', 'formal'],
     inStock: true,
+    isNew: true,
+    addedAt: '2026-10-18',
   },
   {
     id: 'b1',
@@ -97,6 +109,8 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['wedding', 'business', 'formal', 'interview'],
     inStock: true,
+    sizes: BELT_SIZES,
+    addedAt: '2026-08-05',
   },
   {
     id: 'b2',
@@ -109,6 +123,8 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['wedding', 'business', 'formal', 'interview'],
     inStock: true,
+    sizes: BELT_SIZES,
+    addedAt: '2026-08-05',
   },
   {
     id: 'b3',
@@ -121,6 +137,9 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['wedding', 'business'],
     inStock: true,
+    isNew: true,
+    sizes: BELT_SIZES,
+    addedAt: '2026-10-05',
   },
   {
     id: 'b4',
@@ -133,6 +152,9 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['business', 'formal'],
     inStock: true,
+    compareAtPrice: 850,
+    sizes: BELT_SIZES,
+    addedAt: '2026-09-20',
   },
   {
     id: 'b5',
@@ -145,5 +167,7 @@ export const PRODUCTS: Product[] = [
     imageUrl: '',
     occasions: ['business'],
     inStock: false,
+    sizes: BELT_SIZES,
+    addedAt: '2026-09-01',
   },
 ];

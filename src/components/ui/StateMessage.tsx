@@ -16,25 +16,29 @@ type Props = {
 export function StateMessage({ type, title, message, icon, actionLabel, onAction }: Props) {
   if (type === 'loading') {
     return (
-      <View className="flex-1 items-center justify-center gap-3 p-8">
-        <ActivityIndicator color={colors.ink} />
+      <View className="flex-1 items-center justify-center gap-3 bg-cream p-8">
+        <ActivityIndicator color={colors.gold} size="large" />
         <Text className="text-muted">{message ?? 'Loading…'}</Text>
       </View>
     );
   }
 
+  const isError = type === 'error';
+
   return (
-    <View className="flex-1 items-center justify-center gap-3 p-8">
-      <Ionicons
-        name={icon ?? (type === 'error' ? 'alert-circle-outline' : 'file-tray-outline')}
-        size={44}
-        color={type === 'error' ? colors.danger : colors.muted}
-      />
-      {title ? <Text className="text-center text-lg font-bold text-ink">{title}</Text> : null}
-      {message ? <Text className="text-center text-muted">{message}</Text> : null}
+    <View className="flex-1 items-center justify-center gap-4 bg-cream px-8 py-12">
+      <View className={`h-20 w-20 items-center justify-center rounded-full ${isError ? 'bg-danger/10' : 'bg-gold/15'}`}>
+        <Ionicons
+          name={icon ?? (isError ? 'alert-circle-outline' : 'file-tray-outline')}
+          size={36}
+          color={isError ? colors.danger : colors.gold}
+        />
+      </View>
+      {title ? <Text className="text-center font-display text-2xl text-ink">{title}</Text> : null}
+      {message ? <Text className="text-center leading-6 text-muted">{message}</Text> : null}
       {actionLabel && onAction ? (
         <View className="mt-2 w-full">
-          <AppButton label={actionLabel} onPress={onAction} variant="ghost" />
+          <AppButton label={actionLabel} onPress={onAction} variant="dark" />
         </View>
       ) : null}
     </View>

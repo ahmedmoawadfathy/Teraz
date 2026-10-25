@@ -6,9 +6,10 @@ type CartValue = {
   items: CartItem[];
   itemCount: number;
   total: number;
-  addToCart: (product: Product) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
+  addToCart: (product: Product, size?: string, quantity?: number) => void;
+  updateQuantity: (lineId: string, quantity: number) => void;
+  removeFromCart: (lineId: string) => void;
+  isInCart: (productId: string) => boolean;
   clearCart: () => void;
 };
 
@@ -17,27 +18,27 @@ const CartContext = createContext<CartValue | null>(null);
 export function CartProvider({ children }: PropsWithChildren) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product) =>
+  const addToCart = (product: Product, size?: string, quantity = 1) => {
+    const lineId = size ? `${product.id}-${size}` : product.id;
     setItems((current) =>
-      current.some((item) => item.product.id === product.id)
-        ? current.map((item) =>
-            item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item,
-          )
-        : [...current, { product, quantity: 1 }],
-    );
-
-  const removeFromCart = (productId: string) =>
-    setItems((current) => current.filter((item) => item.product.id !== productId));
-
-  const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity < 1) {
-      removeFromCart(productId);
-      return;
-    }
-    setItems((current) =>
-      current.map((item) => (item.product.id === productId ? { ...item, quantity } : item)),
+      current.some((item) => item.lineId === lineId)
+        ? current.map((item) => (item.lineId === lineId ? { ...item, quantity: item.quantity + quantity } : item))
+        : [...current, { lineId, product, quantity, size }],
     );
   };
+
+  const removeFromCart = (lineId: string) =>
+    setItems((current) => current.filter((item) => item.lineId !== lineId));
+
+  const updateQuantity = (lineId: string, quantity: number) => {
+    if (quantity < 1) {
+      removeFromCart(lineId);
+      return;
+    }
+    setItems((current) => current.map((item) => (item.lineId === lineId ? { ...item, quantity } : item)));
+  };
+
+  const isInCart = (productId: string) => items.some((item) => item.product.id === productId);
 
   const clearCart = () => setItems([]);
 
@@ -47,7 +48,7 @@ export function CartProvider({ children }: PropsWithChildren) {
 
   return (
     <CartContext.Provider
-      value={{ items, itemCount, total, addToCart, updateQuantity, removeFromCart, clearCart }}
+      value={{ items, itemCount, total, addToCart, updateQuantity, removeFromCart, isInCart, clearCart }}
     >
       {children}
     </CartContext.Provider>

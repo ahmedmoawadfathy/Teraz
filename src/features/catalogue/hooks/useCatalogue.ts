@@ -26,5 +26,8 @@ export function useCatalogue() {
     [products, category],
   );
 
-  return { products: visibleProducts, loading, error, category, setCategory, reload: load };
+  // In-stock pieces shown in the "New arrivals" carousel.
+  const featured = useMemo(() => products.filter((product) => product.inStock).slice(0, 6), [products]);
+
+  return { products: visibleProducts, allProducts: products, featured, loading, error, category, setCategory, reload: load };
 }

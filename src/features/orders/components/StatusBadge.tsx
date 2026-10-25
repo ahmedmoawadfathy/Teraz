@@ -7,6 +7,12 @@ const badgeClass: Record<OrderStatus, string> = {
   Delivered: 'bg-emerald-100',
 };
 
+const dotClass: Record<OrderStatus, string> = {
+  Processing: 'bg-amber-500',
+  Shipped: 'bg-sky-500',
+  Delivered: 'bg-emerald-500',
+};
+
 const textClass: Record<OrderStatus, string> = {
   Processing: 'text-amber-800',
   Shipped: 'text-sky-800',
@@ -15,7 +21,8 @@ const textClass: Record<OrderStatus, string> = {
 
 export function StatusBadge({ status }: { status: OrderStatus }) {
   return (
-    <View className={`self-start rounded-full px-3 py-1 ${badgeClass[status]}`}>
+    <View className={`flex-row items-center gap-1.5 self-start rounded-full px-3 py-1 ${badgeClass[status]}`}>
+      <View className={`h-1.5 w-1.5 rounded-full ${dotClass[status]}`} />
       <Text className={`text-xs font-bold ${textClass[status]}`}>{status}</Text>
     </View>
   );

@@ -29,6 +29,7 @@ export function OrdersProvider({ children }: PropsWithChildren) {
         name: item.product.name,
         quantity: item.quantity,
         unitPrice: item.product.price,
+        size: item.size,
       })),
     };
     setOrders((current) => [order, ...current]);

@@ -1,8 +1,8 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '@/theme/tokens';
+import { colors, fonts } from '@/theme/tokens';
 import { useCart } from '@/features/cart/hooks/useCart';
 import LoginScreen from '@/features/auth/screens/LoginScreen';
 import RegisterScreen from '@/features/auth/screens/RegisterScreen';
@@ -23,19 +23,23 @@ import type { MainTabParamList, RootStackParamList } from './types';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+// Outline icon normally, filled icon when the tab is active.
 const ICONS = {
-  Home: 'shirt-outline',
-  Styling: 'color-palette-outline',
-  Favourites: 'heart-outline',
-  Cart: 'bag-outline',
-  Profile: 'person-outline',
+  Home: ['home-outline', 'home'],
+  Styling: ['sparkles-outline', 'sparkles'],
+  Favourites: ['heart-outline', 'heart'],
+  Cart: ['bag-handle-outline', 'bag-handle'],
+  Profile: ['person-outline', 'person'],
 } as const;
+
+const navTheme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: colors.cream } };
 
 const headerOptions = {
   headerStyle: { backgroundColor: colors.cream },
   headerTintColor: colors.ink,
   headerShadowVisible: false,
-  headerTitleStyle: { fontWeight: '700' as const },
+  headerTitleStyle: { fontFamily: fonts.display, fontSize: 20 },
+  headerBackButtonDisplayMode: 'minimal' as const,
 };
 
 // Tabs for the main areas the customer switches between.
@@ -46,25 +50,35 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         ...headerOptions,
-        tabBarActiveTintColor: colors.ink,
-        tabBarInactiveTintColor: colors.muted,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.line },
-        tabBarIcon: ({ color, size }) => <Ionicons name={ICONS[route.name]} color={color} size={size} />,
+        tabBarActiveTintColor: colors.goldLight,
+        tabBarInactiveTintColor: '#8B93A7',
+        tabBarStyle: {
+          backgroundColor: colors.ink,
+          borderTopWidth: 0,
+          height: 68,
+          paddingTop: 8,
+          paddingBottom: 10,
+        },
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        tabBarIcon: ({ color, size, focused }) => (
+          <Ionicons name={ICONS[route.name][focused ? 1 : 0]} color={color} size={size} />
+        ),
       })}
     >
-      <Tab.Screen name="Home" component={CatalogueScreen} options={{ title: 'Shop', headerTitle: 'TERAZ' }} />
-      <Tab.Screen name="Styling" component={StylingInputScreen} options={{ title: 'Style me', headerTitle: 'Personal styling' }} />
-      <Tab.Screen name="Favourites" component={FavouritesScreen} />
+      <Tab.Screen name="Home" component={CatalogueScreen} options={{ title: 'Shop', headerShown: false }} />
+      <Tab.Screen name="Styling" component={StylingInputScreen} options={{ title: 'Stylist', headerShown: false }} />
+      <Tab.Screen name="Favourites" component={FavouritesScreen} options={{ title: 'Saved', headerTitle: 'Your favourites' }} />
       <Tab.Screen
         name="Cart"
         component={CartScreen}
         options={{
           title: 'Cart',
+          headerTitle: 'Your cart',
           tabBarBadge: itemCount > 0 ? itemCount : undefined,
-          tabBarBadgeStyle: { backgroundColor: colors.gold },
+          tabBarBadgeStyle: { backgroundColor: colors.goldLight, color: colors.ink, fontWeight: '700' },
         }}
       />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -72,17 +86,17 @@ function MainTabs() {
 // Stack(Login, Register, Main tabs, detail screens): tabs live inside one stack screen.
 export function RootNavigator() {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navTheme}>
       <Stack.Navigator initialRouteName="Login" screenOptions={headerOptions}>
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Create account' }} />
+        <Stack.Screen name="Register" component={RegisterScreen} options={{ title: '' }} />
         <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
-        <Stack.Screen name="Search" component={SearchScreen} />
-        <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{ title: '' }} />
+        <Stack.Screen name="Search" component={SearchScreen} options={{ title: 'Search' }} />
+        <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="StylingResults" component={StylingResultsScreen} options={{ title: 'Your matches' }} />
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Edit profile' }} />
-        <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} options={{ title: 'Order history' }} />
+        <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} options={{ title: 'Your orders' }} />
         <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} options={{ title: 'Order details' }} />
       </Stack.Navigator>
     </NavigationContainer>

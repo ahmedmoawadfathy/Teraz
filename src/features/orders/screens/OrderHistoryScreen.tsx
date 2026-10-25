@@ -16,7 +16,7 @@ export default function OrderHistoryScreen({ navigation }: RootStackScreenProps<
       className="flex-1 bg-cream"
       data={orders}
       keyExtractor={(item) => item.id}
-      contentContainerClassName="flex-grow gap-3 p-4"
+      contentContainerClassName="flex-grow gap-3 px-5 pb-10 pt-2"
       ListEmptyComponent={
         <StateMessage
           type="empty"
@@ -33,19 +33,28 @@ export default function OrderHistoryScreen({ navigation }: RootStackScreenProps<
           <Pressable
             onPress={() => navigation.navigate('OrderDetails', { orderId: item.id })}
             accessibilityRole="button"
-            className="flex-row items-center gap-3 rounded-2xl bg-surface p-4 active:opacity-70"
+            className="gap-4 rounded-3xl bg-surface p-5 shadow-sm active:opacity-80"
           >
-            <View className="flex-1 gap-1.5">
-              <View className="flex-row items-center justify-between">
-                <Text className="font-bold text-ink">{item.id}</Text>
-                <StatusBadge status={item.status} />
+            <View className="flex-row items-center gap-3">
+              <View className="h-11 w-11 items-center justify-center rounded-full bg-ink">
+                <Ionicons name="bag-handle-outline" size={19} color={colors.goldLight} />
               </View>
-              <Text className="text-muted">
-                {formatOrderDate(item.orderDate)} · {count} {count === 1 ? 'item' : 'items'}
-              </Text>
-              <Text className="font-semibold text-ink">{formatPrice(item.totalPrice)}</Text>
+              <View className="flex-1">
+                <Text className="font-bold text-ink">Order {item.id}</Text>
+                <Text className="text-sm text-muted">{formatOrderDate(item.orderDate)}</Text>
+              </View>
+              <StatusBadge status={item.status} />
             </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+            <View className="h-px bg-line" />
+            <View className="flex-row items-center justify-between">
+              <Text className="text-muted">
+                {count} {count === 1 ? 'piece' : 'pieces'}
+              </Text>
+              <View className="flex-row items-center gap-2">
+                <Text className="font-display text-xl text-ink">{formatPrice(item.totalPrice)}</Text>
+                <Ionicons name="chevron-forward" size={16} color={colors.muted} />
+              </View>
+            </View>
           </Pressable>
         );
       }}

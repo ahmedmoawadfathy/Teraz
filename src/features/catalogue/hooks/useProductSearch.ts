@@ -1,6 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getProducts } from '../api';
-import type { Category, Product } from '../types';
+import type { Category, Product, SortOption } from '../types';
+
+export type Availability = 'all' | 'inStock' | 'outOfStock';
+
+export const AVAILABILITY_OPTIONS: { value: Availability; label: string }[] = [
+  { value: 'all', label: 'All' },
+  { value: 'inStock', label: 'In stock' },
+  { value: 'outOfStock', label: 'Sold out' },
+];
+
+function sortProducts(products: Product[], sort: SortOption) {
+  const list = [...products];
+  if (sort === 'priceLowHigh') list.sort((a, b) => a.price - b.price);
+  if (sort === 'priceHighLow') list.sort((a, b) => b.price - a.price);
+  if (sort === 'nameAZ') list.sort((a, b) => a.name.localeCompare(b.name));
+  if (sort === 'nameZA') list.sort((a, b) => b.name.localeCompare(a.name));
+  if (sort === 'newest') list.sort((a, b) => b.addedAt.localeCompare(a.addedAt));
+  return list; // 'featured' keeps the catalogue order
+}
 
 export type PriceRange = 'all' | 'under500' | '500to650' | 'over650';
 
@@ -27,6 +45,8 @@ export function useProductSearch() {
   const [category, setCategory] = useState<Category | 'all'>('all');
   const [colour, setColour] = useState<string | null>(null);
   const [priceRange, setPriceRange] = useState<PriceRange>('all');
+  const [availability, setAvailability] = useState<Availability>('all');
+  const [sort, setSort] = useState<SortOption>('featured');
 
   useEffect(() => {
     getProducts()
@@ -43,24 +63,28 @@ export function useProductSearch() {
 
   const results = useMemo(() => {
     const text = query.trim().toLowerCase();
-    return products.filter(
+    const filtered = products.filter(
       (product) =>
         (text === '' ||
           product.name.toLowerCase().includes(text) ||
           product.style.toLowerCase().includes(text)) &&
         (category === 'all' || product.category === category) &&
         (colour === null || product.colour === colour) &&
-        inPriceRange(product.price, priceRange),
+        inPriceRange(product.price, priceRange) &&
+        (availability === 'all' || (availability === 'inStock' ? product.inStock : !product.inStock)),
     );
-  }, [products, query, category, colour, priceRange]);
+    return sortProducts(filtered, sort);
+  }, [products, query, category, colour, priceRange, availability, sort]);
 
-  const hasFilters = query !== '' || category !== 'all' || colour !== null || priceRange !== 'all';
+  const hasFilters =
+    query !== '' || category !== 'all' || colour !== null || priceRange !== 'all' || availability !== 'all';
 
   function clearFilters() {
     setQuery('');
     setCategory('all');
     setColour(null);
     setPriceRange('all');
+    setAvailability('all');
   }
 
   return {
@@ -76,6 +100,10 @@ export function useProductSearch() {
     setColour,
     priceRange,
     setPriceRange,
+    availability,
+    setAvailability,
+    sort,
+    setSort,
     hasFilters,
     clearFilters,
   };

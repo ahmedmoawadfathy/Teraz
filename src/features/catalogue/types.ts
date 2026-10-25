@@ -15,4 +15,21 @@ export type Product = {
   imageUrl: string;
   occasions: Occasion[];
   inStock: boolean;
+  compareAtPrice?: number; // original price when the item is on sale
+  isNew?: boolean; // shows the "New" badge
+  sizes?: string[]; // e.g. belt sizes; the customer must pick one
+  addedAt: string; // ISO date, used to sort by newest
 };
+
+export type SortOption = 'featured' | 'priceLowHigh' | 'priceHighLow' | 'nameAZ' | 'nameZA' | 'newest';
+
+export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'newest', label: 'Newest' },
+  { value: 'priceLowHigh', label: 'Price: low to high' },
+  { value: 'priceHighLow', label: 'Price: high to low' },
+  { value: 'nameAZ', label: 'A – Z' },
+  { value: 'nameZA', label: 'Z – A' },
+];
+
+export const BELT_SIZES = ['90 cm', '95 cm', '100 cm', '105 cm', '110 cm'];
