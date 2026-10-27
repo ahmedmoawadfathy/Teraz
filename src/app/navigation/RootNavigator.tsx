@@ -7,8 +7,11 @@ import { useCart } from '@/features/cart/hooks/useCart';
 import LoginScreen from '@/features/auth/screens/LoginScreen';
 import RegisterScreen from '@/features/auth/screens/RegisterScreen';
 import CatalogueScreen from '@/features/catalogue/screens/CatalogueScreen';
+import SearchScreen from '@/features/catalogue/screens/SearchScreen';
 import ProductDetailsScreen from '@/features/catalogue/screens/ProductDetailsScreen';
 import FavouritesScreen from '@/features/favourites/screens/FavouritesScreen';
+import CartScreen from '@/features/cart/screens/CartScreen';
+import CheckoutScreen from '@/features/cart/screens/CheckoutScreen';
 import ProfileScreen from '@/features/profile/screens/ProfileScreen';
 import OrderHistoryScreen from '@/features/orders/screens/OrderHistoryScreen';
 import OrderDetailsScreen from '@/features/orders/screens/OrderDetailsScreen';
@@ -59,6 +62,16 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={CatalogueScreen} options={{ title: 'Shop', headerShown: false }} />
       <Tab.Screen name="Favourites" component={FavouritesScreen} options={{ title: 'Saved', headerTitle: 'Your favourites' }} />
+      <Tab.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          title: 'Cart',
+          headerTitle: 'Your cart',
+          tabBarBadge: itemCount > 0 ? itemCount : undefined,
+          tabBarBadgeStyle: { backgroundColor: colors.goldLight, color: colors.ink, fontWeight: '700' },
+        }}
+      />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
@@ -71,7 +84,9 @@ export function RootNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ title: '' }} />
         <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="Search" component={SearchScreen} options={{ title: 'Search' }} />
         <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Checkout" component={CheckoutScreen} />
         <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} options={{ title: 'Your orders' }} />
         <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} options={{ title: 'Order details' }} />
       </Stack.Navigator>
