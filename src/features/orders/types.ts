@@ -1,0 +1,19 @@
+export type OrderStatus = 'Processing' | 'Shipped' | 'Delivered';
+
+export type OrderItem = {
+  productId: string;
+  name: string;
+  quantity: number;
+  unitPrice: number;
+  size?: string;
+};
+
+export type Order = {
+  id: string;
+  orderDate: string;
+  status: OrderStatus;
+  totalPrice: number;
+  deliveryAddress: string;
+  phone: string;
+  items: OrderItem[];
+};
