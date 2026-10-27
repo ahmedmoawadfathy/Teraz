@@ -9,10 +9,13 @@ import RegisterScreen from '@/features/auth/screens/RegisterScreen';
 import CatalogueScreen from '@/features/catalogue/screens/CatalogueScreen';
 import SearchScreen from '@/features/catalogue/screens/SearchScreen';
 import ProductDetailsScreen from '@/features/catalogue/screens/ProductDetailsScreen';
+import StylingInputScreen from '@/features/styling/screens/StylingInputScreen';
+import StylingResultsScreen from '@/features/styling/screens/StylingResultsScreen';
 import FavouritesScreen from '@/features/favourites/screens/FavouritesScreen';
 import CartScreen from '@/features/cart/screens/CartScreen';
 import CheckoutScreen from '@/features/cart/screens/CheckoutScreen';
 import ProfileScreen from '@/features/profile/screens/ProfileScreen';
+import EditProfileScreen from '@/features/profile/screens/EditProfileScreen';
 import OrderHistoryScreen from '@/features/orders/screens/OrderHistoryScreen';
 import OrderDetailsScreen from '@/features/orders/screens/OrderDetailsScreen';
 import type { MainTabParamList, RootStackParamList } from './types';
@@ -61,6 +64,7 @@ function MainTabs() {
       })}
     >
       <Tab.Screen name="Home" component={CatalogueScreen} options={{ title: 'Shop', headerShown: false }} />
+      <Tab.Screen name="Styling" component={StylingInputScreen} options={{ title: 'Stylist', headerShown: false }} />
       <Tab.Screen name="Favourites" component={FavouritesScreen} options={{ title: 'Saved', headerTitle: 'Your favourites' }} />
       <Tab.Screen
         name="Cart"
@@ -86,7 +90,9 @@ export function RootNavigator() {
         <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
         <Stack.Screen name="Search" component={SearchScreen} options={{ title: 'Search' }} />
         <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="StylingResults" component={StylingResultsScreen} options={{ title: 'Your matches' }} />
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Edit profile' }} />
         <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} options={{ title: 'Your orders' }} />
         <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} options={{ title: 'Order details' }} />
       </Stack.Navigator>
