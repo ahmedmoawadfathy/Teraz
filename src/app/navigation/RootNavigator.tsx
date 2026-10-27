@@ -7,8 +7,11 @@ import { useCart } from '@/features/cart/hooks/useCart';
 import LoginScreen from '@/features/auth/screens/LoginScreen';
 import RegisterScreen from '@/features/auth/screens/RegisterScreen';
 import CatalogueScreen from '@/features/catalogue/screens/CatalogueScreen';
+import ProductDetailsScreen from '@/features/catalogue/screens/ProductDetailsScreen';
 import FavouritesScreen from '@/features/favourites/screens/FavouritesScreen';
 import ProfileScreen from '@/features/profile/screens/ProfileScreen';
+import OrderHistoryScreen from '@/features/orders/screens/OrderHistoryScreen';
+import OrderDetailsScreen from '@/features/orders/screens/OrderDetailsScreen';
 import type { MainTabParamList, RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -68,6 +71,9 @@ export function RootNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ title: '' }} />
         <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="OrderHistory" component={OrderHistoryScreen} options={{ title: 'Your orders' }} />
+        <Stack.Screen name="OrderDetails" component={OrderDetailsScreen} options={{ title: 'Order details' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
